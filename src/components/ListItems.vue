@@ -1,16 +1,27 @@
 <template>
-    <div>
-        <h2>Lista de Elementos</h2>
-        <ul>
-            <li v-for="item in crudStore.items" :key="item.id">
-                {{ item.name }} - {{ item.description }}
-                <button @click="editItem(item.id)">Editar</button>
-                <button @click="deleteItem(item.id)">Eliminar</button>
-            </li>
-        </ul>
-        <EditItem v-if="editingItemId" :itemId="editingItemId" @edit-completed="clearEditing"
-            @edit-cancelled="clearEditing" />
-
+    <div class="container mt-4">
+        <h2 class="mb-4">Lista de Elementos</h2>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Descripción</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="item in crudStore.items" :key="item.id">
+                    <td>{{ item.id }}</td>
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.description }}</td>
+                    <td>
+                        <button class="btn btn-primary btn-sm" @click="editItem(item.id)">Editar</button>
+                        <button class="btn btn-danger btn-sm" @click="deleteItem(item.id)">Eliminar</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </template>
 
