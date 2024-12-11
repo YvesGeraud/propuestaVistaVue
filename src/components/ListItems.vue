@@ -1,13 +1,13 @@
 <template>
     <div class="container mt-4">
         <h2 class="mb-4">Lista de Elementos</h2>
-        <table class="table table-striped">
-            <thead>
+        <table class="table table-striped table-hover">
+            <thead class="table-dark">
                 <tr>
-                    <th>ID</th>
-                    <th>Nombre</th>
-                    <th>Descripción</th>
-                    <th>Acciones</th>
+                    <th scope="col">ID</th>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Descripción</th>
+                    <th scope="col">Acciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -16,14 +16,19 @@
                     <td>{{ item.name }}</td>
                     <td>{{ item.description }}</td>
                     <td>
-                        <button class="btn btn-primary btn-sm" @click="editItem(item.id)">Editar</button>
+                        <button class="btn btn-primary btn-sm me-2" @click="editItem(item.id)">Editar</button>
                         <button class="btn btn-danger btn-sm" @click="deleteItem(item.id)">Eliminar</button>
                     </td>
                 </tr>
             </tbody>
         </table>
+
+        <!-- Componente de edición -->
+        <EditItem v-if="editingItemId !== null" :itemId="editingItemId" @edit-completed="clearEditing"
+            @edit-cancelled="clearEditing" />
     </div>
 </template>
+
 
 <script>
 import { useCrudStore } from '../stores/crudStore';

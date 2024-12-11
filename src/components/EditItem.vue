@@ -1,18 +1,27 @@
 <template>
-    <div v-if="isEditing">
-        <h2>Editar Elemento</h2>
+    <div class="container mt-4">
+        <h2 class="mb-4">Editar Elemento</h2>
         <form @submit.prevent="submitForm">
-            <input v-model="name" placeholder="Nombre" required />
-            <input v-model="description" placeholder="Descripción" required />
-            <button type="submit">Actualizar</button>
-            <button type="button" @click="cancelEdit">Cancelar</button>
+            <div class="mb-3">
+                <label for="editName" class="form-label">Nombre</label>
+                <input id="editName" type="text" class="form-control" v-model="name" placeholder="Nombre" required />
+            </div>
+            <div class="mb-3">
+                <label for="editDescription" class="form-label">Descripción</label>
+                <input id="editDescription" type="text" class="form-control" v-model="description"
+                    placeholder="Descripción" required />
+            </div>
+            <div>
+                <button class="btn btn-primary me-2" type="submit">Actualizar</button>
+                <button class="btn btn-secondary" type="button" @click="cancelEdit">Cancelar</button>
+            </div>
         </form>
     </div>
 </template>
 
 <script>
 import { useCrudStore } from '../stores/crudStore';
-import { ref, watch } from 'vue';
+import { ref, watch, onMounted } from 'vue';
 
 export default {
     props: {
@@ -23,53 +32,43 @@ export default {
     },
     setup(props, { emit }) {
         const crudStore = useCrudStore();
-
-        // Referencias locales para los campos del formulario
         const name = ref('');
         const description = ref('');
-        const isEditing = ref(false);
 
-        // Observar cambios en el itemId y cargar datos del elemento
-        watch(
-            () => props.itemId,
-            (newId) => {
-                console.log('Editando item con ID:', newId);
-                const item = crudStore.items.find((i) => i.id === newId);
-                if (item) {
-                    console.log('Datos del item:', item);
-                    name.value = item.name;
-                    description.value = item.description;
-                    isEditing.value = true;
-                }
+        // Cargar datos iniciales
+        const loadItemData = () => {
+            const item = crudStore.items.find((i) => i.id === props.itemId);
+            if (item) {
+                name.value = item.name;
+                description.value = item.description;
+            } else {
+                console.error(`No se encontró el elemento con ID: ${props.itemId}`);
             }
-        );
+        };
+
+        watch(() => props.itemId, loadItemData, { immediate: true });
 
         const submitForm = () => {
             crudStore.updateItem(props.itemId, {
                 name: name.value,
                 description: description.value,
             });
-            isEditing.value = false;
-            emit('edit-completed');
+            emit('edit-completed'); // Cierra el formulario después de guardar
         };
 
         const cancelEdit = () => {
-            isEditing.value = false;
-            emit('edit-cancelled');
+            emit('edit-cancelled'); // Solo cierra el formulario
         };
 
-        const editItem = (id) => {
-            console.log('Editar item con ID:', id);
-            editingItemId.value = id;
-        };
-
+        onMounted(() => {
+            loadItemData();
+        });
 
         return {
             name,
             description,
             submitForm,
             cancelEdit,
-            isEditing,
         };
     },
 };

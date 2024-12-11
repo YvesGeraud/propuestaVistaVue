@@ -1,22 +1,25 @@
 <template>
     <div class="container mt-4">
         <h2 class="mb-4">Agregar Elemento</h2>
-        <form @submit.prevent="submitForm" class="form-inline">
+        <form @submit.prevent="submitForm">
             <div class="mb-3">
-                <input class="form-control" v-model="name" placeholder="Nombre" required />
+                <label for="name" class="form-label">Nombre</label>
+                <input id="name" type="text" class="form-control" v-model="name" placeholder="Escribe el nombre"
+                    required />
             </div>
             <div class="mb-3">
-                <input class="form-control" v-model="description" placeholder="Descripción" required />
+                <label for="description" class="form-label">Descripción</label>
+                <input id="description" type="text" class="form-control" v-model="description"
+                    placeholder="Escribe la descripción" required />
             </div>
             <button class="btn btn-success" type="submit">Agregar</button>
         </form>
     </div>
 </template>
 
-
 <script>
-import { useCrudStore } from '../stores/crudStore';
 import { ref } from 'vue';
+import { useCrudStore } from '../stores/crudStore';
 
 export default {
     setup() {
