@@ -18,8 +18,9 @@
 </template>
 
 <script>
-import { ref } from 'vue';
 import { useCrudStore } from '../stores/crudStore';
+import { ref } from 'vue';
+import Swal from 'sweetalert2';
 
 export default {
     setup() {
@@ -31,6 +32,7 @@ export default {
             crudStore.addItem({ name: name.value, description: description.value });
             name.value = '';
             description.value = '';
+            Swal.fire('¡Agregado!', 'El elemento se agregó correctamente.', 'success');
         };
 
         return {

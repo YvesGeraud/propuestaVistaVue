@@ -17,7 +17,7 @@
                     <td>{{ item.description }}</td>
                     <td>
                         <button class="btn btn-primary btn-sm me-2" @click="editItem(item.id)">Editar</button>
-                        <button class="btn btn-danger btn-sm" @click="deleteItem(item.id)">Eliminar</button>
+                        <button class="btn btn-danger btn-sm" @click="confirmDelete(item.id)">Eliminar</button>
                     </td>
                 </tr>
             </tbody>
@@ -29,10 +29,10 @@
     </div>
 </template>
 
-
 <script>
 import { useCrudStore } from '../stores/crudStore';
 import EditItem from './EditItem.vue';
+import Swal from 'sweetalert2';
 import { ref } from 'vue';
 
 export default {
@@ -47,8 +47,22 @@ export default {
             editingItemId.value = id;
         };
 
-        const deleteItem = (id) => {
-            crudStore.deleteItem(id);
+        const confirmDelete = async (id) => {
+            const result = await Swal.fire({
+                title: '¿Estás seguro?',
+                text: 'No podrás revertir esta acción.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar',
+            });
+
+            if (result.isConfirmed) {
+                crudStore.deleteItem(id);
+                Swal.fire('¡Eliminado!', 'El elemento ha sido eliminado.', 'success');
+            }
         };
 
         const clearEditing = () => {
@@ -59,7 +73,7 @@ export default {
             crudStore,
             editingItemId,
             editItem,
-            deleteItem,
+            confirmDelete,
             clearEditing,
         };
     },

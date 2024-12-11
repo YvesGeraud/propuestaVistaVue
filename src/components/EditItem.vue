@@ -21,7 +21,8 @@
 
 <script>
 import { useCrudStore } from '../stores/crudStore';
-import { ref, watch, onMounted } from 'vue';
+import { ref, watch } from 'vue';
+import Swal from 'sweetalert2';
 
 export default {
     props: {
@@ -35,34 +36,34 @@ export default {
         const name = ref('');
         const description = ref('');
 
-        // Cargar datos iniciales
+        // Cargar datos del elemento actual
         const loadItemData = () => {
             const item = crudStore.items.find((i) => i.id === props.itemId);
             if (item) {
                 name.value = item.name;
                 description.value = item.description;
             } else {
-                console.error(`No se encontró el elemento con ID: ${props.itemId}`);
+                console.error(`Elemento con ID ${props.itemId} no encontrado`);
             }
         };
 
+        // React a cambios en itemId
         watch(() => props.itemId, loadItemData, { immediate: true });
 
+        // Guardar cambios
         const submitForm = () => {
             crudStore.updateItem(props.itemId, {
                 name: name.value,
                 description: description.value,
             });
-            emit('edit-completed'); // Cierra el formulario después de guardar
+            Swal.fire('¡Actualizado!', 'El elemento se actualizó correctamente.', 'success');
+            emit('edit-completed');
         };
 
+        // Cancelar edición
         const cancelEdit = () => {
-            emit('edit-cancelled'); // Solo cierra el formulario
+            emit('edit-cancelled');
         };
-
-        onMounted(() => {
-            loadItemData();
-        });
 
         return {
             name,
